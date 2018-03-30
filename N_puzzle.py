@@ -111,10 +111,10 @@ def run(table, N, Node):
             
 
 if __name__=='__main__':
-    f = open('n-queen.txt', 'r')
+    f = open('n-puzzle.txt', 'r')
     result = list()
     
-    for line in open('n-queen.txt'):
+    for line in open('n-puzzle.txt'):
         line = f.readline()
         print(line)
         result.append(line)

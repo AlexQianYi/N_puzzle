@@ -13,7 +13,13 @@ Created on Thu Mar 29 19:49:14 2018
 N = 3
 
 class Node:
-    table
+    def __init__(N, table, score, parent):
+        self.table = table
+        self.N = N
+        self.score = score
+        self.parent = parent
+        
+        
 
 def hamming(table):
     global N
@@ -97,10 +103,23 @@ def nextStep(current_table):
             next_state.append(['up', 'u'])
             next_state.append(['left', 'l'])
             return next_state
-        
-def run(table, N):
-    
+
+"""        
+def run(table, N, Node):
+    if Node.table
+"""
             
+
+if __name__=='__main__':
+    f = open('n-queen.txt', 'r')
+    result = list()
+    
+    for line in open('n-queen.txt'):
+        line = f.readline()
+        print(line)
+        result.append(line)
+    print(result)
+    f.close()
             
             
     

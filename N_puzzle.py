@@ -10,15 +10,14 @@ Created on Thu Mar 29 19:49:14 2018
 4 5 6
 7 8
 """
-N = 3
+
 
 class Node:
-    def __init__(N, table, score, parent):
+    def __init__(table, score, parent, children):
         self.table = table
-        self.N = N
         self.score = score
         self.parent = parent
-        
+        self.children = children
         
 
 def hamming(table):
@@ -42,8 +41,10 @@ def manhattan(table):
                 count_manhattan+=1
     return count_manhattan
 
-def nextStep(current_table):
-    global N
+def move(table, action):
+    
+
+def nextStep(current_table, N):
     next_state = []
     blank_x, blank_y = 0, 0
     
@@ -104,22 +105,57 @@ def nextStep(current_table):
             next_state.append(['left', 'l'])
             return next_state
 
-"""        
-def run(table, N, Node):
-    if Node.table
-"""
+      
+def run(Node, N, target, step_count, deep, step_seq):
+    if Node.table==target:
+        return 
+    else:
+        next_state = nextStep(Node.table, N)
+        temp_min_score = 100
+        temp_next_node = None
+        next_step = 'u'
+        for i in range(len(next_state)):
+            temp_table = move(Node.table, next_state[i][1])
+            temp_score = manhattan(temp_table)
+            children_node = Node(temp_table, temp_score, Node, [])
+            Node.children.append(children_node)
+            if temp_score<temp_min_score:
+                temp_min_score=temp_score
+                temp_next_node = children_node
+                next_step = next_state[i][1]
+        run(temp_next_node, N, target, step_count+1, deep+1, step_seq.append(next_step))
+            
+            
             
 
 if __name__=='__main__':
     f = open('n-puzzle.txt', 'r')
     result = list()
-    
+    table_ini = []
+    k=0
     for line in open('n-puzzle.txt'):
         line = f.readline()
-        print(line)
+        table_ini.append([])
+        for i in range(len(line)):
+            if line[i]!='\t' and line[i]!='\n':
+                table_ini[k].append(int(line[i]))
         result.append(line)
-    print(result)
+        k+=1
+    print(table_ini)
     f.close()
+    
+    N = len(table_ini[0])
+    target = [[j for j in range(1+i*N, (i+1)*N+1)] for i in range(N)]
+    target[-1][-1]=0
+    print(target)
+    score = manhattan(table_ini)
+    
+    root = Node(table_ini, score, None, [])
+    step_count, step_seq, deep = 0, [], 0
+    
+    run(root, N, target, step_count, deep, step_seq)
             
-            
+    print(step_count)
+    print(step_seq)           
+    
     

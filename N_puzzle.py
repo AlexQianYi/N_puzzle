@@ -13,7 +13,7 @@ Created on Thu Mar 29 19:49:14 2018
 
 
 class Node:
-    def __init__(table, score, parent, children):
+    def __init__(self, table, score, parent, children):
         self.table = table
         self.score = score
         self.parent = parent
@@ -128,19 +128,19 @@ def nextStep(current_table, N):
             return next_state
 
       
-def run(Node, N, target, step_count, deep, step_seq):
-    if Node.table==target:
+def run(node, N, target, step_count, deep, step_seq):
+    if node.table==target:
         return 
     else:
-        next_state = nextStep(Node.table, N)
+        next_state = nextStep(node.table, N)
         temp_min_score = 100
         temp_next_node = None
         next_step = 'u'
         for i in range(len(next_state)):
-            temp_table = move(Node.table, next_state[i][1])
+            temp_table = move(node.table, next_state[i][1], N)
             temp_score = manhattan(temp_table)
-            children_node = Node(temp_table, temp_score, Node, [])
-            Node.children.append(children_node)
+            children_node = Node(temp_table, temp_score, node, [])
+            node.children.append(children_node)
             if temp_score<temp_min_score:
                 temp_min_score=temp_score
                 temp_next_node = children_node

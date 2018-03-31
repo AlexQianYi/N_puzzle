@@ -41,7 +41,13 @@ def manhattan(table):
                 count_manhattan+=1
     return count_manhattan
 
-def move(table, action):
+def move(table, action, N):
+    blank_x, blank_y = 0,0
+    for i in range(N):
+        for j in range(N):
+            if table[i][j]==0:
+                blank_x, blank_y=i, j
+    
     
 
 def nextStep(current_table, N):

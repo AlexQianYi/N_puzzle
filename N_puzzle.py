@@ -48,7 +48,23 @@ def move(table, action, N):
             if table[i][j]==0:
                 blank_x, blank_y=i, j
     
-    
+    if action=='u':
+        table[blank_x][blank_y]=table[blank_x+1][blank_y]
+        table[blank_x+1][blank_y]=0
+        return table
+    if action=='d':
+        table[blank_x][blank_y]=table[blank_x-1][blank_y]
+        table[blank_x-1][blank_y]=0
+        return table
+    if action=='l':
+        table[blank_x][blank_y]=table[blank_x][blank_y+1]
+        table[blank_x][blank_y+1]=0
+        return table
+    if action=='r':
+        table[blank_x][blank_y]=table[blank_x][blank_y-1]
+        table[blank_x][blank_y-1]=0
+        return table
+        
 
 def nextStep(current_table, N):
     next_state = []

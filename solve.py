@@ -17,21 +17,28 @@ class solve:
     def __init__(self, input_table):
         
         self.initial_state = copy.deepcopy(input_table)       
-        self.goal_state = self.set_goal_state(input_table)      
+        self.goal_state = self.SetGoalState(input_table)      
         self.AStarQueue = utility.PriorityQueue()
+        self.explored = utility.Explored()
+        self.frontier = utility.Frontier()
         
         self.env = environment.environment(self.AStarQueue)
         
-    def AStartSearch(self):
+    def AStarSearch(self):
+        print('A star')
         
         self.env.StartTime()
         
-        init_table = table.table(self.initial_state)
-        init_score = initial_table.manhattan_score(self.goal_state)
+        n = len(self.initial_state)
         
-        self.AStarQueue.queue,put((init_score, init_table))
+        init_table = table.table(self.initial_state, n)
+        init_score = init_table.Manhattan(self.goal_state)
+        
+        self.AStarQueue.queue.put((init_score, init_table))
+        c = 0
         
         while self.AStarQueue.queue:
+            print(c)
             
             min_score = self.AStarQueue.queue.get()
             state = min_score[1]
@@ -47,6 +54,7 @@ class solve:
                 return self.env
             
             self.ExpandNode(state)
+            c+=1
             
         print("Error")
         

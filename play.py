@@ -27,5 +27,5 @@ if __name__=='__main__':
     target = [[j for j in range(1+i*N, (i+1)*N+1)] for i in range(N)]
     target[-1][-1]=0
     
-    solution = solve.Solve(table_ini)
-    result = solution.a_star_search()
+    solution = solve.solve(table_ini)
+    result = solution.AStarSearch()

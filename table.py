@@ -11,9 +11,9 @@ import math
 class table:
     
     def __init__(self, input_table, N):
-        self.table = copy.deecopy(input_table)
+        self.table = copy.deepcopy(input_table)
         
-        self.step_path = []
+        self.path_history = []
         self.score = 0
         self.n = N
         
@@ -54,10 +54,10 @@ class table:
         sum = 0
         for i in range(self.n):
             for j in range(self.n):
-                if self.state[i][j]==0:
+                if self.table[i][j]==0:
                     continue
                 else:
-                    sum += self.ManhattanDis(self.state[i][j], (i,j), goal_state)
+                    sum += self.ManhattanDis(self.table[i][j], (i,j), goal_state)
                     
         return sum
     

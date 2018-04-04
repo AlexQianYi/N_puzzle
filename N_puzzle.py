@@ -17,13 +17,14 @@ step_seq = []
 
 
 class Node:
-    def __init__(self, table, score, parent, children, move):
+    def __init__(self, table, score, parent, children, move, last_action):
         self.table = table
         self.score = score
         self.parent = parent
         self.children = children
         self.move = move
         self.visit = 1
+        self.last_action = last_action
         
 
 def hamming(table):
@@ -78,6 +79,17 @@ def move(table, action, N):
         temp_table[blank_x][blank_y-1]=0
         return temp_table
         
+    
+def move_check(last_action, current_action):
+    if last_action=='u' and current_action=='d':
+        return True
+    if last_action=='d' and current_action=='u':
+        return True
+    if last_action=='r' and current_action=='l':
+        return True
+    if last_action=='l' and current_action=='r':
+        return True
+    return False
 
 def nextStep(current_table, N):
     print('nextstep')
@@ -163,7 +175,7 @@ def run(node, N, target, step_count, deep):
         for i in range(len(node.move)):
             temp_table = move(node.table, node.move[i], N)
             temp_score = manhattan(temp_table)
-            children_node = Node(temp_table, temp_score, node, [], [])
+            children_node = Node(temp_table, temp_score, node, [], [], node.move[i])
             children_node.visit = 0
             node.children.append(children_node)
             if temp_score<temp_min_score:
@@ -184,16 +196,19 @@ def run(node, N, target, step_count, deep):
         next_step = 'u'
         print(deep)
         for i in range(len(next_state)):
-            temp_table = move(node.table, next_state[i][1], N)
-            temp_score = manhattan(temp_table)
-            children_node = Node(temp_table, temp_score, node, [], [])
-            children_node.visit=0
-            node.children.append(children_node)
-            node.move.append(next_state[i][1])
-            if temp_score<temp_min_score:
-                temp_min_score=temp_score
-                temp_next_node = children_node
-                next_step = next_state[i][1]
+            if move_check(node.last_action, next_state[i][1]):
+                continue
+            else:
+                temp_table = move(node.table, next_state[i][1], N)
+                temp_score = manhattan(temp_table)
+                children_node = Node(temp_table, temp_score, node, [], [], next_state[i][1])
+                children_node.visit=0
+                node.children.append(children_node)
+                node.move.append(next_state[i][1])
+                if temp_score<temp_min_score:
+                    temp_min_score=temp_score
+                    temp_next_node = children_node
+                    next_step = next_state[i][1]
         if temp_min_score!=100:
             node.move.remove(next_step)
             print(next_step)
@@ -226,7 +241,7 @@ if __name__=='__main__':
     print(target)
     score = manhattan(table_ini)
     
-    root = Node(table_ini, score, None, [], [])
+    root = Node(table_ini, score, None, [], [], None)
     
         
     if root.table==target:
@@ -239,7 +254,7 @@ if __name__=='__main__':
         for i in range(len(next_state)):
             temp_table = move(root.table, next_state[i][1], N)
             temp_score = manhattan(temp_table)
-            children_node = Node(temp_table, temp_score, root, [], [])
+            children_node = Node(temp_table, temp_score, root, [], [], next_state[i][1])
             root.children.append(children_node)
             root.move.append(next_state[i][1])
             if temp_score<temp_min_score:

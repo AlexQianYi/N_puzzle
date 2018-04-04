@@ -148,11 +148,13 @@ def run(node, N, target, step_count, deep):
     global step_seq
     if deep==-1:
         return 
+    if step_count ==20:
+        return 
         
     if node.table==target:
         return 
     elif len(node.move)==0 and node.visit==0:
-        run(node.parent, N, target, step_count-1, deep-1)
+        run(node.parent, N, target, step_count+1, deep-1)
     elif len(node.move)!=0:
         temp_min_score = 100
         temp_next_node = None
@@ -173,7 +175,7 @@ def run(node, N, target, step_count, deep):
             print(next_step)
             run(temp_next_node, N, target, step_count+1, deep+1)
         else:
-            run(node.parent, N, target, step_count-1, deep-1)
+            run(node.parent, N, target, step_count+1, deep-1)
             
     else:
         next_state = nextStep(node.table, N)
@@ -197,7 +199,7 @@ def run(node, N, target, step_count, deep):
             print(next_step)
             run(temp_next_node, N, target, step_count+1, deep+1)
         else:
-            run(node.parent, N, target, step_count-1, deep-1)
+            run(node.parent, N, target, step_count+1, deep-1)
             
             
             

@@ -10,14 +10,20 @@ Created on Thu Mar 29 19:49:14 2018
 4 5 6
 7 8
 """
+import sys
+sys.setrecursionlimit(1000000)
+
+step_seq = []
 
 
 class Node:
-    def __init__(self, table, score, parent, children):
+    def __init__(self, table, score, parent, children, move):
         self.table = table
         self.score = score
         self.parent = parent
         self.children = children
+        self.move = move
+        self.visit = 1
         
 
 def hamming(table):
@@ -42,31 +48,39 @@ def manhattan(table):
     return count_manhattan
 
 def move(table, action, N):
+    print('move')
     blank_x, blank_y = 0,0
     for i in range(N):
         for j in range(N):
             if table[i][j]==0:
                 blank_x, blank_y=i, j
+                
+    temp_table = []
+    for i in range(N):
+        temp_table.append([])
+        for j in range(N):
+            temp_table[i].append(table[i][j])
     
     if action=='u':
-        table[blank_x][blank_y]=table[blank_x+1][blank_y]
-        table[blank_x+1][blank_y]=0
-        return table
+        temp_table[blank_x][blank_y]=temp_table[blank_x+1][blank_y]
+        temp_table[blank_x+1][blank_y]=0
+        return temp_table
     if action=='d':
-        table[blank_x][blank_y]=table[blank_x-1][blank_y]
-        table[blank_x-1][blank_y]=0
-        return table
+        temp_table[blank_x][blank_y]=temp_table[blank_x-1][blank_y]
+        temp_table[blank_x-1][blank_y]=0
+        return temp_table
     if action=='l':
-        table[blank_x][blank_y]=table[blank_x][blank_y+1]
-        table[blank_x][blank_y+1]=0
-        return table
+        temp_table[blank_x][blank_y]=temp_table[blank_x][blank_y+1]
+        temp_table[blank_x][blank_y+1]=0
+        return temp_table
     if action=='r':
-        table[blank_x][blank_y]=table[blank_x][blank_y-1]
-        table[blank_x][blank_y-1]=0
-        return table
+        temp_table[blank_x][blank_y]=temp_table[blank_x][blank_y-1]
+        temp_table[blank_x][blank_y-1]=0
+        return temp_table
         
 
 def nextStep(current_table, N):
+    print('nextstep')
     next_state = []
     blank_x, blank_y = 0, 0
     
@@ -87,65 +101,103 @@ def nextStep(current_table, N):
         if blank_y==0:
             next_state.append(['up', 'u'])
             next_state.append(['down', 'd'])
-            next_state.append(['right', 'r'])
+            next_state.append(['left', 'l'])
             return next_state
         if blank_y==(N-1):
             next_state.append(['up', 'u'])
             next_state.append(['down', 'd'])
-            next_state.append(['left', 'l'])
+            next_state.append(['right', 'r'])
             return next_state
             
     if blank_y>0 and blank_y<N-1:
         if blank_x==0:
-            next_state.append(['down', 'd'])
+            next_state.append(['up', 'u'])
             next_state.append(['left', 'l'])
             next_state.append(['right', 'r'])
             return next_state
         if blank_x==(N-1):
-            next_state.append(['up', 'u'])
+            next_state.append(['down', 'd'])
             next_state.append(['left', 'l'])
             next_state.append(['right', 'r'])
             return next_state
     
     if blank_x==0:
         if blank_y==0:
-            next_state.append(['down', 'd'])
-            next_state.append(['right', 'r'])
+            next_state.append(['up', 'u'])
+            next_state.append(['left', 'l'])
             return next_state
         if blank_y==(N-1):
-            next_state.append(['down', 'd'])
-            next_state.append(['left', 'l'])
+            next_state.append(['up', 'u'])
+            next_state.append(['right', 'r'])
             return next_state
     
     if blank_x==(N-1):
         if blank_y==0:
-            next_state.append(['up', 'u'])
-            next_state.append(['right', 'r'])
+            next_state.append(['down', 'd'])
+            next_state.append(['left', 'l'])
             return next_state
         if blank_y==(N-1):
-            next_state.append(['up', 'u'])
-            next_state.append(['left', 'l'])
+            next_state.append(['down', 'd'])
+            next_state.append(['right', 'r'])
             return next_state
 
       
-def run(node, N, target, step_count, deep, step_seq):
+def run(node, N, target, step_count, deep):
+    print('run')
+    print(node.table)
+    global step_seq
+    if deep==-1:
+        return 
+        
     if node.table==target:
         return 
+    elif len(node.move)==0 and node.visit==0:
+        run(node.parent, N, target, step_count-1, deep-1)
+    elif len(node.move)!=0:
+        temp_min_score = 100
+        temp_next_node = None
+        next_step = 'u'
+        node.children = []
+        for i in range(len(node.move)):
+            temp_table = move(node.table, node.move[i], N)
+            temp_score = manhattan(temp_table)
+            children_node = Node(temp_table, temp_score, node, [], [])
+            children_node.visit = 0
+            node.children.append(children_node)
+            if temp_score<temp_min_score:
+                temp_min_score = temp_score
+                temp_next_node = children_node
+                next_step = node.move[i]
+        if temp_min_score!=100:
+            node.move.remove(next_step)
+            print(next_step)
+            run(temp_next_node, N, target, step_count+1, deep+1)
+        else:
+            run(node.parent, N, target, step_count-1, deep-1)
+            
     else:
         next_state = nextStep(node.table, N)
         temp_min_score = 100
         temp_next_node = None
         next_step = 'u'
+        print(deep)
         for i in range(len(next_state)):
             temp_table = move(node.table, next_state[i][1], N)
             temp_score = manhattan(temp_table)
-            children_node = Node(temp_table, temp_score, node, [])
+            children_node = Node(temp_table, temp_score, node, [], [])
+            children_node.visit=0
             node.children.append(children_node)
+            node.move.append(next_state[i][1])
             if temp_score<temp_min_score:
                 temp_min_score=temp_score
                 temp_next_node = children_node
                 next_step = next_state[i][1]
-        run(temp_next_node, N, target, step_count+1, deep+1, step_seq.append(next_step))
+        if temp_min_score!=100:
+            node.move.remove(next_step)
+            print(next_step)
+            run(temp_next_node, N, target, step_count+1, deep+1)
+        else:
+            run(node.parent, N, target, step_count-1, deep-1)
             
             
             
@@ -172,12 +224,31 @@ if __name__=='__main__':
     print(target)
     score = manhattan(table_ini)
     
-    root = Node(table_ini, score, None, [])
-    step_count, step_seq, deep = 0, [], 0
+    root = Node(table_ini, score, None, [], [])
     
-    run(root, N, target, step_count, deep, step_seq)
+        
+    if root.table==target:
+        print('done') 
+    else:
+        next_state = nextStep(root.table, N)
+        temp_min_score = 100
+        temp_next_node = None
+        next_step = 'u'
+        for i in range(len(next_state)):
+            temp_table = move(root.table, next_state[i][1], N)
+            temp_score = manhattan(temp_table)
+            children_node = Node(temp_table, temp_score, root, [], [])
+            root.children.append(children_node)
+            root.move.append(next_state[i][1])
+            if temp_score<temp_min_score:
+                temp_min_score=temp_score
+                temp_next_node = children_node
+                next_step = next_state[i][1]
+        if temp_min_score!=100:
+            root.move.remove(next_step)
+            root.visit = 0            
+            run(temp_next_node, N, target, 1, 0)
             
-    print(step_count)
     print(step_seq)           
     
     

@@ -14,9 +14,9 @@ class PriorityQueue:
     def __init__(self):
         self.queue = queue.PriorityQueue()
         
-    def find(self, item):
+    def __contains__(self, item):
         for element in self.queue:
-            if item.state == element.state:
+            if item.table == element.table:
                 return True
         
         return False
@@ -25,19 +25,19 @@ class Frontier:
     def __init__(self):
         self.queue = deque()
         
-    def find(self, item):
+    def __contains__(self, item):
         for element in self.queue:
-            if item.state ==element.state:
+            if item.table ==element.table:
                 return True
         
         return False
     
 class Explored:
     def __init__(self):
-        self.set = set()
+        self.set = []
         
-    def find(self, item):
+    def __contains__(self, item):
         for element in self.set:
-            if item.state == element.state:
+            if item == element:
                 return True
         return False

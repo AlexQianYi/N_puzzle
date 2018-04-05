@@ -31,7 +31,7 @@ class environment:
         return len(self.queue.queue)
     
     def UpdateQueue(self):
-        queue_length = self.UpdateQueue()
+        queue_length = self.LengthQueue()
         if queue_length > self.max_queue:
             self.max_queue = queue_length
             

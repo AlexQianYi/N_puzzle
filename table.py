@@ -6,16 +6,21 @@ Created on Wed Apr  4 10:18:18 2018
 @author: yiqian
 """
 import copy
-import math
 
-class table:
+class Table:
     
     def __init__(self, input_table, N):
         self.table = copy.deepcopy(input_table)
         
-        self.path_history = []
+        self.path_history = list()
         self.score = 0
         self.n = N
+        
+    def __eq__(self, other):
+        return self.score==other.score
+    
+    def __lt__(self, other):
+        return self.score < other.score
         
     def find(self, tile, table):
         blank_x, blank_y = 0,0

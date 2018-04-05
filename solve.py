@@ -22,7 +22,7 @@ class solve:
         self.explored = utility.Explored()
         self.frontier = utility.Frontier()
         
-        self.env = environment.environment(self.AStarQueue)
+        self.env = environment.environment(self.frontier)
         
     def AStarSearch(self):
         print('A star')
@@ -31,7 +31,7 @@ class solve:
         
         n = len(self.initial_state)
         
-        init_table = table.table(self.initial_state, n)
+        init_table = table.Table(self.initial_state, n)
         init_score = init_table.Manhattan(self.goal_state)
         
         self.AStarQueue.queue.put((init_score, init_table))
@@ -39,6 +39,8 @@ class solve:
         
         while self.AStarQueue.queue:
             print(c)
+            if c==20:
+                break
             
             min_score = self.AStarQueue.queue.get()
             state = min_score[1]
@@ -46,9 +48,15 @@ class solve:
             self.env.search_deep = len(state.path_history)
             self.env.UpdateDeep()
             
-            self.explored.set.add(state)
+            not_find = 0
+            for i in range(len(self.explored.set)):
+                if self.explored.set[i]==state.table:
+                    not_find = 1
+                    break
+            if not_find == 0:
+                self.explored.set.append(state.table)
             
-            if self.goal_test(state):
+            if self.GoalTest(state):
                 self.env.path = state.path_history
                 self.env.StopTime()
                 return self.env
@@ -58,21 +66,25 @@ class solve:
             
         print("Error")
         
-    def ExpandNode(self, table):
+    def ExpandNode(self, start_table):
             
         action = ['u', 'd', 'l', 'r']
+        
+        n = len(self.initial_state)
             
         for act in action:
                 
-            temp_table = table.table(table.state)
+            temp_table = table.Table(start_table.table, n)
                 
-            temp_table.path_hisroty = copy.copy(table.path_history)
+            temp_table.path_hisroty = copy.copy(start_table.path_history)
                 
-            if temp_table.move(node):
-                temp_table.path_history.append(node)
+            if temp_table.move(act):
+                temp_table.path_history.append(act)
                     
-                if temp_table not in self.froniter and temp_table not in self.visited:
-                    temp_table.score = temp_table.manhattan(self.goal_state)
+                if temp_table not in self.frontier and temp_table.table not in self.explored.set:
+                    temp_table.score = temp_table.Manhattan(self.goal_state)
+                    print(type(temp_table.score))
+                    print(type(temp_table))
                     self.AStarQueue.queue.put((temp_table.score, temp_table))
                         
                 self.env.UpdateQueue()
@@ -80,7 +92,7 @@ class solve:
             self.env.node_expanded +=1
             
     def GoalTest(self, state):
-        if state.state == self.goal_state:
+        if state.table == self.goal_state:
             return True
         else:
             return False

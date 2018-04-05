@@ -12,14 +12,14 @@ if __name__=='__main__':
     result = list()
     table_ini = []
     k=0
-    for line in open('n-puzzle.txt'):
-        line = f.readline()
-        table_ini.append([])
-        for i in range(len(line)):
-            if line[i]!='\t' and line[i]!='\n':
-                table_ini[k].append(int(line[i]))
-        result.append(line)
-        k+=1
+    
+    with open('n-puzzle.txt') as f:
+        for line in f:
+            table_ini.append([])
+            for each in enumerate(line.split()):
+                table_ini[k].append(int(each[1]))
+            k+=1
+    
     print(table_ini)
     f.close()
     
@@ -27,5 +27,14 @@ if __name__=='__main__':
     target = [[j for j in range(1+i*N, (i+1)*N+1)] for i in range(N)]
     target[-1][-1]=0
     
+    
+    
     solution = solve.solve(table_ini)
     result = solution.AStarSearch()
+    
+    
+    print("initial state: "+ str(table_ini))
+    print("path to goal: " + str(result.path))
+    print("search deep: " + str(result.search_deep))
+    print("running time: " + str(result.search_time)+"ms")
+    print("number of node: "+ str(result.node_expanded))

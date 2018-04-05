@@ -39,8 +39,8 @@ class solve:
         
         while self.AStarQueue.queue:
             print(c)
-            if c==20:
-                break
+            #if c==20:
+             #   break
             
             min_score = self.AStarQueue.queue.get()
             state = min_score[1]
@@ -59,6 +59,7 @@ class solve:
             if self.GoalTest(state):
                 self.env.path = state.path_history
                 self.env.StopTime()
+                print(state.table)
                 return self.env
             
             self.ExpandNode(state)
@@ -76,15 +77,13 @@ class solve:
                 
             temp_table = table.Table(start_table.table, n)
                 
-            temp_table.path_hisroty = copy.copy(start_table.path_history)
+            temp_table.path_history = copy.copy(start_table.path_history)
                 
             if temp_table.move(act):
                 temp_table.path_history.append(act)
                     
                 if temp_table not in self.frontier and temp_table.table not in self.explored.set:
                     temp_table.score = temp_table.Manhattan(self.goal_state)
-                    print(type(temp_table.score))
-                    print(type(temp_table))
                     self.AStarQueue.queue.put((temp_table.score, temp_table))
                         
                 self.env.UpdateQueue()

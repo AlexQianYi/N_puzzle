@@ -35,13 +35,13 @@ class Table:
         blank_x, blank_y = self.find(0, self.table)
     
         if action=='u':
-            y,x = 1,0
+            x,y = 1,0
         if action=='d':
-            y,x = -1,0
+            x,y = -1,0
         if action=='l':
-            y,x = 0,1
+            x,y = 0,1
         if action=='r':
-            y,x = 0,-1
+            x,y = 0,-1
         
         if blank_y+y not in range(0, self.n):
             return False

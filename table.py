@@ -72,3 +72,25 @@ class Table:
         distance = (abs(position[0]-blank_x) + abs(position[1]-blank_y))
         
         return distance
+    
+    def Manhattan_LinearConflict(self, goal_state):
+        
+        sum = 0
+        sum = self.Manhattan(goal_state)
+        count = 0 
+        
+        for i in range(self.n):
+            for j in range(self.n):
+                temp_x = goal_state[i][j]/self.n
+                temp_y = goal_state[i][j]%self.n
+                if temp_x == i and temp_y!=j:
+                    temp_x2 = goal_state[i][temp_y]/self.n
+                    temp_y2 = goal_state[i][temp_y]%self.n
+                    if temp_x2==i and temp_y2==j:
+                        count +=1
+                if temp_x!=i and temp_y==j:
+                    temp_x2 = goal_state[temp_x][j]/self.n
+                    temp_y2 = goal_state[temp_x][j]%self.n
+                    if temp_x2==i and temp_y2==j:
+                        count +=1
+        return sum+count

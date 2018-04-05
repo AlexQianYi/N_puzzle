@@ -31,7 +31,6 @@ class Table:
         return blank_x, blank_y
         
     def move(self, action):
-        print('move')
         blank_x, blank_y = self.find(0, self.table)
     
         if action=='u':

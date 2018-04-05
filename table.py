@@ -73,6 +73,33 @@ class Table:
         
         return distance
     
+    def CheckRowCol(self, a, b):
+        count = 0
+        if b==100:
+            for j in range(self.n):
+                if self.table[a][j]==0:
+                    continue
+                temp_x = int(self.table[a][j]/self.n)
+                temp_y = self.table[a][j]%self.n-1
+                if temp_x==a and temp_y!=j:
+                    count+=1
+            if count>1:
+                return count
+            else:
+                return 0
+        if a==100:
+            for i in range(self.n):
+                if self.table[i][b]==0:
+                    continue
+                temp_x = int(self.table[i][b]/self.n)
+                temp_y = self.table[i][b]%self.n-1
+                if temp_y!=i and temp_x==b:
+                    count+=1
+            if count>1:
+                return count
+            else:
+                return 0
+    
     def Manhattan_LinearConflict(self, goal_state):
         
         sum = 0
@@ -81,16 +108,16 @@ class Table:
         
         for i in range(self.n):
             for j in range(self.n):
-                temp_x = goal_state[i][j]/self.n
-                temp_y = goal_state[i][j]%self.n
+                if self.table[i][j]==0:
+                    continue
+                temp_x = int(self.table[i][j]/self.n)
+                temp_y = self.table[i][j]%self.n-1
+                # at goal row
                 if temp_x == i and temp_y!=j:
-                    temp_x2 = goal_state[i][temp_y]/self.n
-                    temp_y2 = goal_state[i][temp_y]%self.n
-                    if temp_x2==i and temp_y2==j:
-                        count +=1
+                    count += self.CheckRowCol(temp_x, 100)
+                    continue
+                # at goal column
                 if temp_x!=i and temp_y==j:
-                    temp_x2 = goal_state[temp_x][j]/self.n
-                    temp_y2 = goal_state[temp_x][j]%self.n
-                    if temp_x2==i and temp_y2==j:
-                        count +=1
+                    count += self.CheckRowCol(100, temp_y)
+                    continue
         return sum+count

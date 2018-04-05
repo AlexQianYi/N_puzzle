@@ -32,8 +32,9 @@ class solve:
         n = len(self.initial_state)
         
         init_table = table.Table(self.initial_state, n)
-        init_score = init_table.Manhattan(self.goal_state)
-        
+        #init_score = init_table.Manhattan(self.goal_state)
+        init_score = init_table.Manhattan_LinearConflict(self.goal_state)
+        print(init_score)
         self.AStarQueue.queue.put((init_score, init_table))
         c = 0
         
@@ -83,7 +84,8 @@ class solve:
                 temp_table.path_history.append(act)
                     
                 if temp_table not in self.frontier and temp_table.table not in self.explored.set:
-                    temp_table.score = temp_table.Manhattan(self.goal_state)
+                    #temp_table.score = temp_table.Manhattan(self.goal_state)
+                    temp_table.score = temp_table.Manhattan_LinearConflict(self.goal_state)
                     self.AStarQueue.queue.put((temp_table.score, temp_table))
                         
                 self.env.UpdateQueue()

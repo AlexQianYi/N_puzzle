@@ -8,12 +8,12 @@ Created on Wed Apr  4 11:57:41 2018
 import solve
 
 if __name__=='__main__':
-    f = open('n-puzzle.txt', 'r')
+
     result = list()
     table_ini = []
     k=0
     
-    with open('n-puzzle.txt') as f:
+    with open('n-puzzle-24.txt') as f:
         for line in f:
             table_ini.append([])
             for each in enumerate(line.split()):
